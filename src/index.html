@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT-DLP Horror</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .download-history-container::-webkit-scrollbar {
+          width: 6px;
+      }
+      
+      .download-history-container::-webkit-scrollbar-track {
+          background: rgba(31, 31, 31, 0.5);
+          border-radius: 10px;
+      }
+      
+      .download-history-container::-webkit-scrollbar-thumb {
+          background: rgba(128, 23, 29, 0.8);
+          border-radius: 10px;
+      }
+      
+      .download-history-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(178, 34, 34, 0.9);
+      }
+      .drag-region {
+        -webkit-app-region: drag;
+        app-region: drag;
+    }
+    
+    /* Prevent drag on buttons and other interactive elements */
+    .no-drag {
+        -webkit-app-region: no-drag;
+        app-region: no-drag;
+    }
+
+  </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blood: '#8B0000',
+                        darkgray: '#121212',
+                        charcoal: '#1e1e1e',
+                        crimson: '#DC143C',
+                        shadow: '#2d2d2d',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkgray text-gray-300 min-h-screen flex flex-col">
+    
+    <header class="bg-gradient-to-r from-black to-blood border-b border-blood/50 px-4 h-14 flex justify-between items-center shadow-md drag-region">
+      <div class="flex items-center no-drag">
+          <i class="fa-brands fa-youtube text-red-600 text-2xl mr-2"></i>
+          <h1 class="text-xl font-bold tracking-wider text-white">PHANTOM DOWNLOADER</h1>
+      </div>
+      <div class="flex space-x-2 no-drag">
+          <button id="minimize-btn" class="text-gray-400 hover:text-white transition-colors p-2">
+              <i class="fa-solid fa-minus"></i>
+          </button>
+          <button id="maximize-btn" class="text-gray-400 hover:text-white transition-colors p-2">
+              <i class="fa-regular fa-square"></i>
+          </button>
+          <button id="close-btn" class="text-gray-400 hover:text-red-600 transition-colors p-2">
+              <i class="fa-solid fa-xmark"></i>
+          </button>
+      </div>
+  </header>
+
+    
+    <main class="flex-1 p-6 overflow-auto flex flex-col gap-6">
+        
+        <div class="flex w-full">
+            <input id="url-input" type="text" placeholder="Enter YouTube URL..." 
+                class="flex-1 bg-charcoal border border-gray-700 text-gray-200 px-4 py-3 rounded-l-md focus:outline-none focus:ring-1 focus:ring-blood transition-all">
+            <button id="paste-url-btn" 
+                class="bg-blood hover:bg-red-900 text-white px-6 py-3 rounded-r-md transition-colors shadow-lg font-medium">
+                Paste URL
+            </button>
+        </div>
+
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="bg-charcoal border border-gray-700 rounded-lg p-4 shadow-lg hover:shadow-blood/20 transition-all">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-black/60 rounded-md flex items-center justify-center text-blood mr-3">
+                        <i class="fa-solid fa-folder-open text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-white mb-2 font-bold">Output Folder</h3>
+                        <div class="flex gap-2">
+                            <input id="output-dir" type="text" readonly 
+                                class="flex-1 bg-black/50 border border-gray-700 text-gray-400 px-3 py-2 rounded-md text-sm">
+                            <button id="browse-button" 
+                                class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded-md text-sm transition-colors">
+                                Browse
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="bg-charcoal border border-gray-700 rounded-lg p-4 shadow-lg hover:shadow-blood/20 transition-all">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-black/60 rounded-md flex items-center justify-center text-blood mr-3">
+                        <i class="fa-solid fa-file-video text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-white mb-2 font-bold">Format</h3>
+                        <div class="flex gap-4">
+                            <label class="flex flex-col items-center cursor-pointer group">
+                                <input type="radio" name="format" value="mp4" checked class="sr-only peer">
+                                <div class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center mb-1 peer-checked:bg-blood transition-colors">
+                                    <i class="fa-solid fa-film text-gray-400 peer-checked:text-white"></i>
+                                </div>
+                                <span class="text-sm text-gray-400 group-hover:text-white peer-checked:text-white transition-colors">MP4</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer group">
+                                <input type="radio" name="format" value="mp3" class="sr-only peer">
+                                <div class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center mb-1 peer-checked:bg-blood transition-colors">
+                                    <i class="fa-solid fa-music text-gray-400 peer-checked:text-white"></i>
+                                </div>
+                                <span class="text-sm text-gray-400 group-hover:text-white peer-checked:text-white transition-colors">MP3</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="bg-charcoal border border-gray-700 rounded-lg p-4 shadow-lg hover:shadow-blood/20 transition-all">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-black/60 rounded-md flex items-center justify-center text-blood mr-3">
+                        <i class="fa-solid fa-gauge-high text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-white mb-2 font-bold">Quality</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="quality" value="best" checked class="sr-only peer">
+                                <span class="block px-3 py-1 text-sm bg-black/50 rounded peer-checked:bg-blood text-gray-400 peer-checked:text-white transition-colors">
+                                    Best
+                                </span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="quality" value="normal" class="sr-only peer">
+                                <span class="block px-3 py-1 text-sm bg-black/50 rounded peer-checked:bg-blood text-gray-400 peer-checked:text-white transition-colors">
+                                    Normal
+                                </span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="quality" value="custom" class="sr-only peer">
+                                <span class="block px-3 py-1 text-sm bg-black/50 rounded peer-checked:bg-blood text-gray-400 peer-checked:text-white transition-colors">
+                                    Custom
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="bg-charcoal border border-gray-700 rounded-lg p-4 shadow-lg hover:shadow-red-700/30 transition-all flex items-center justify-center">
+                <button id="download-button" class="w-full bg-gradient-to-r from-blood to-crimson hover:from-crimson hover:to-blood text-white font-bold py-3 px-6 rounded-md transition-all shadow-lg hover:shadow-red-700/50 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>DOWNLOAD</span>
+                </button>
+            </div>
+        </div>
+
+        
+        <div id="progress-container" class="bg-charcoal border border-gray-700 rounded-lg p-5 shadow-lg hidden">
+            <h2 class="text-white font-bold mb-4 flex items-center">
+                <i class="fa-solid fa-ghost text-blood mr-2"></i>
+                ACTIVE DOWNLOADS
+            </h2>
+            <div class="bg-black/50 rounded-lg p-4 border border-gray-800">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                    <div class="flex items-center flex-grow min-w-0">
+                        <div class="w-12 h-12 bg-blood/30 rounded flex items-center justify-center text-blood animate-pulse-slow">
+                            <i class="fa-brands fa-youtube text-2xl"></i>
+                        </div>
+                        <div class="ml-3 min-w-0">
+                            <div id="filename" class="text-white font-medium truncate">Preparing download...</div>
+                            <div class="flex text-xs text-gray-400 mt-1 space-x-3">
+                                <span id="progress-speed"></span>
+                                <span id="progress-eta"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-1/2 relative">
+                        <div class="w-full bg-black/50 rounded-full h-2 mb-1">
+                            <div id="progress-bar" class="bg-gradient-to-r from-blood to-crimson h-2 rounded-full transition-all"></div>
+                        </div>
+                        <div id="progress-text" class="text-right text-xs text-gray-400">0%</div>
+                    </div>
+                    
+                    <button id="cancel-button" class="text-gray-400 hover:text-red-500 transition-colors p-2">
+                        <i class="fa-solid fa-skull-crossbones"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="recently-downloaded bg-charcoal border border-gray-700 rounded-lg p-5 shadow-lg hidden">
+          <h2 class="text-white font-bold mb-4 flex items-center">
+              <i class="fa-solid fa-skull text-blood mr-2"></i>
+              DOWNLOAD HISTORY
+          </h2>
+          <div class="download-history-container max-h-60 overflow-y-auto pr-1">
+              <div class="download-history space-y-2">
+                  
+              </div>
+          </div>
+      </div>
+    </main>
+
+    
+    <footer class="bg-black text-gray-500 px-6 py-3 border-t border-gray-800 flex justify-between items-center">
+        <div class="footer-status text-sm">Ready to capture</div>
+        <div class="flex space-x-4">
+            <button class="text-gray-500 hover:text-white transition-colors text-sm flex items-center">
+                <i class="fa-solid fa-gear mr-2"></i> Settings
+            </button>
+            <button class="text-gray-500 hover:text-white transition-colors text-sm flex items-center">
+                <i class="fa-solid fa-circle-info mr-2"></i> About
+            </button>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
