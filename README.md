@@ -17,7 +17,7 @@ A stylish, gothic-themed YouTube video and audio downloader built with Tauri and
 
 ## Screenshots
 
-![App Screenshot](https://github.com/imtaqin/PHANTOM-DOWNLOADER/raw/main/screenshots/main.png)
+![Screenshot](src/assets/image.png)
 
 ## Tech Stack
 
